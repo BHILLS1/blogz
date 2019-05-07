@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Issa Blog</h1>
+<form action='/blog' method='post' >
+<hr />
+            <h2>{{blog.title}}</h2>
+            <p>{{blog.body}}</p>
+            
+
+{% endblock %}

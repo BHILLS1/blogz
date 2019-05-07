@@ -5,9 +5,12 @@
 <h1>Issa Blog</h1>
 <form action='/blog' method='post' >
 <hr />
-            <h2>{{blog.title}}</h2>
+            <h3>{{blog.title}}</h3>
             <p>{{blog.body}}</p>
-           
+            <p class="post-author">
+                    written by
+                     <a href="/blog?user={{user.id}}"></a>
+                 </p>
 
 
 {% endblock %}

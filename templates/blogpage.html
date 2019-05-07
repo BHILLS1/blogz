@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1>Issa Blog</h1>
-    <form action='/blog' method='post' >
+    <form action='/blogpage' method='post' >
     <hr />
 
     {% if blogs|length == 0 %}
@@ -12,6 +12,7 @@
             {% for blog in blogs %}
             <h2><a href="./blog?id={{blog.id}}">{{blog.title}}</a></h2>
            <p>{{blog.body}}</p>
+         
             {% endfor %}
 
     {% endif %}

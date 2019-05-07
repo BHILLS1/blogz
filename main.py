@@ -46,8 +46,8 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
         if user and user.password == password:
-            session['username'] = username
-            flash('Welcome ,'+user.username)
+            session['username'] = user.username
+            flash('Welcome ,' +user.username)
             return redirect('/newpost')
         
         else:
@@ -89,28 +89,24 @@ def signup():
 
     return render_template('signup.html')
 
-@app.route('/logout')
+@app.route('/logout', methods=['GET'])
 def logout():
     del session['username']
     return redirect('/blog')
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/')
 def index():
-    owner = User.query.filter_by(username=session['username']).first()
-
-    if request.method == 'POST':
-        blog_name = request.form['blog']
-        new_blog = Blog(blog_name, owner)
-        db.session.add(new_blog)
-        db.session.commit()
-
-    blogs = Blog.query.filter_by(owner=owner).all()    
-    return render_template('blogpage.html', title='Issa Blog', blogs=blogs)
-
+    blogs = Blog.query.all()
+    users = User.query.all()
+    return render_template('index.html', title='Issa Blog', users=users, blogs=blogs)
+       
 @app.route('/newpost', methods=['POST', 'GET'])
 def newpost():
 
-    owner = User.query.filter_by(username=session['username']).first()
+    user = User.query.filter_by(username=session['username']).first()
+    if request.method == 'GET':
+        return render_template('newpost.html')
+    
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
@@ -123,24 +119,26 @@ def newpost():
             flash("Please fill in the body", 'error')
             return redirect('/newpost')
         else:
-            new_post = Blog(title, body)
+            new_post = Blog(title, body, user)
             db.session.add(new_post)
             db.session.commit()
-        return redirect('/')
+            blog_id = new_post.id
+        return redirect('/blog?id=' +str(blog_id))
 
-    return render_template('newpost.html')
 
-
-@app.route('/blog', methods=['GET'])
+@app.route('/blog', methods=['POST','GET'])
 def blog():
-   blog_id = int(request.args.get('id'))
-   blog = Blog.query.get(blog_id)
-   return render_template('blog.html', blog=blog)
+    if request.args.get('id'):
+        blog_id = int(request.args.get('id'))
+        blog = Blog.query.get(blog_id)
+        return render_template('blog.html', blog=blog)
+    else:
+        blogs = Blog.query.all()
+        return render_template('blogpage.html', blogs=blogs)
+    # if request.args.get('username'):
+    #     user_id = Blog.query.filter_by(user.id)
+    # #     return render_template('userpage.html', blogs=blogs)
 
-@app.route('/blogpage', methods=['POST', 'GET'])
-def blogpage():
-    
-    return redirect('/')
 
 
 
