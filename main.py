@@ -135,9 +135,11 @@ def blog():
     else:
         blogs = Blog.query.all()
         return render_template('blogpage.html', blogs=blogs)
-    # if request.args.get('username'):
-    #     user_id = Blog.query.filter_by(user.id)
-    # #     return render_template('userpage.html', blogs=blogs)
+    # user_id = request.args.get('user')
+    # user_posts = User.query.filter_by(id=id).all()
+    # if user_id != None:
+    #     blogs = Blog.query.filter_by(owner_id=user_id).all()
+    # return render_template('userpage.html', blogs=blogs)
 
 
 
