@@ -128,20 +128,24 @@ def newpost():
 
 @app.route('/blog', methods=['POST','GET'])
 def blog():
-    if request.args.get('id'):
+    users = User.query.all()
+    blogs = Blog.query.all()
+    blog_content = []
+    if "id" in request.args:
         blog_id = int(request.args.get('id'))
         blog = Blog.query.get(blog_id)
-        return render_template('blog.html', blog=blog)
+        user = User.query.filter_by(id=blog.owner_id).first()
+        return render_template('blog.html', blog=blog, user=user)
+    elif "user" in request.args:
+        username = request.args.get('user')
+        for user in users:
+            print(user.username)
+            if user.username == username:
+                blog_content = Blog.query.filter_by(user=user).all()
+        return render_template('userpage.html', blogs=blog_content, user=user)
     else:
-        blogs = Blog.query.all()
         return render_template('blogpage.html', blogs=blogs)
-    # user_id = request.args.get('user')
-    # user_posts = User.query.filter_by(id=id).all()
-    # if user_id != None:
-    #     blogs = Blog.query.filter_by(owner_id=user_id).all()
-    # return render_template('userpage.html', blogs=blogs)
-
-
+    
 
 
 
